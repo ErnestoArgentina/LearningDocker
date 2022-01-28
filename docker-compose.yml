@@ -3,9 +3,9 @@ version: '3.4'
 networks:
   laravel:
     driver: bridge
-    ipam:
-      config: 
-        - subnet: 172.16.238.0/24
+    # ipam:
+    #   config: 
+    #     - subnet: 172.16.238.0/24
 
 # services:
 #   alpha:
@@ -66,6 +66,7 @@ services:
       - C:/projects/laravel/Shonga:/var/www/html # Apontar a pasta do projecto onde se pretende instalar o php
     ports:
       - "9000:9000"
+      - "6001:6001"
     networks:
       - laravel
   composer:
@@ -80,4 +81,15 @@ services:
     restart: always
     networks:
       - laravel
+  nodejs:
+    image: node:14-alpine
+    container_name: nodejs
+    volumes:
+      - D:/projects/quasar/RumukaQuasar/dist/pwa:/app
+    command: ["yarn global add @quasar/cli"]
+    ports:
+      - "4000:4000"
+    networks:
+      - laravel
+
   
