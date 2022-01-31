@@ -82,14 +82,36 @@ services:
     networks:
       - laravel
   nodejs:
-    image: node:14-alpine
+    build: 
+      context: .
+      dockerfile: ./node/Dockerfile
     container_name: nodejs
     volumes:
       - D:/projects/quasar/RumukaQuasar/dist/pwa:/app
-    command: ["yarn global add @quasar/cli"]
+    working_dir: /app
+    # command: /bin/sh -c "yarn && npx quasar serve"
     ports:
       - "4000:4000"
     networks:
       - laravel
+  nginx_quasar:
+    # image: nginx:stable-alpine
+    image: nginx
+    container_name: nginx_quasar
+    ports:
+      - "8081:80" # binds local 8081 port with nignx's 80 port
+    volumes:
+      # - C:/DockerDev/spa:/var/www/html 
+      - C:/DockerDev/spa:/usr/share/nginx/html 
+      - ./nginx:/var/logs/nginx:rw
+      # - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:rw # apontar oo fichero de configuracao do nginx
+    depends_on:
+      - php
+      - mysql
+    networks:
+      - laravel
+    links:
+      - php
+    command: [nginx-debug, '-g', 'daemon off;']
 
   
